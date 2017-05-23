@@ -9,6 +9,7 @@ import play.api.mvc._
 import anorm.{~, _}
 import spray.json._
 import DefaultJsonProtocol._
+import akka.util.Helpers.Requiring
 
 import scala.concurrent.Future
 
@@ -43,6 +44,9 @@ object CarAdvController extends  Controller {
       case Some(id:Long) => Created(Json.obj("created" -> id))
       case _ => InternalServerError(Json.obj("created" -> false))
     }
+  }
+  def validate(adv:CarAdv)  = Future{
+
   }
 
   def put(id:Int) = Action.async(parse.tolerantText) { implicit request =>

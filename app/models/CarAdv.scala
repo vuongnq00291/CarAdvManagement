@@ -1,8 +1,7 @@
 package models
 
 import anorm.{SQL, ~}
-import anorm.SqlParser.{int, str}
-import controllers.CarAdvController.parser
+import anorm.SqlParser._
 import controllers.{DB, now}
 
 import scala.concurrent.Future
@@ -22,7 +21,11 @@ case class CarAdv(
 )
 
 object CarAdv{
-
+  val parser = {
+    int("id")~str("title")~str("fual")~int("price")~int("newone")~int("mileage")
+  }.map{
+    case id~title~fual~price~newone~mileage => CarAdv(id,title,fual,price,newone,mileage,now.getMillis)
+  }
   def get(id:Int) = Future {
     val parser = {
       int("id")~str("title")~str("fual")~int("price")~int("newone")~int("mileage")
@@ -58,7 +61,7 @@ object CarAdv{
     }
   }
 
-  def update(adv:CarAdv) = Future {
+  def update(id:Int,adv:CarAdv) = Future {
     val query = SQL("UPDATE CarAdv SET title={title},fual={fual}," +
       "price={price},newone={newone},mileage={miles},first_registration={frdate} where id = {id}")
     DB.withConnection {con =>
@@ -69,10 +72,23 @@ object CarAdv{
         'newone -> adv.newCar,
         'miles -> adv.mileage,
         'frdate ->  now.toString,
-        'id ->  adv.id
+        'id ->  id
       ).executeInsert()
     }
   }
 
+  def delete(id:Int) = Future {
+    DB.withConnection { implicit connection =>
+      SQL(
+        """
+          DELETE
+          FROM CarAdv
+          WHERE id = {id};
+        """
+      ).on(
+        'id -> id
+      ).executeUpdate()
+    }
+  }
 
 }

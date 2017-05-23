@@ -7,7 +7,6 @@ import play.api.db._
 import play.api.libs.json.Json
 import play.api.mvc._
 import anorm.{~, _}
-import anorm.SqlParser._
 import spray.json._
 import DefaultJsonProtocol._
 
@@ -20,11 +19,7 @@ import scala.concurrent.Future
 object CarAdvController extends  Controller {
 
   implicit val colorFormat = jsonFormat7(CarAdv.apply)
-  val parser = {
-    int("id")~str("title")~str("fual")~int("price")~int("newone")~int("mileage")
-  }.map{
-    case id~title~fual~price~newone~mileage => CarAdv(id,title,fual,price,newone,mileage,now.getMillis)
-  }
+
 
   def get(id:Int)= Action.async{
     CarAdv.get(id).map{
@@ -50,13 +45,20 @@ object CarAdvController extends  Controller {
     }
   }
 
-  def put() = Action.async(parse.tolerantText) { implicit request =>
+  def put(id:Int) = Action.async(parse.tolerantText) { implicit request =>
     val s = request.body.toString
     val jsonAst = s.parseJson
     val adv = jsonAst.convertTo[CarAdv]
-    CarAdv.update(adv).map{
+    CarAdv.update(id,adv).map{
       case Some(id:Long) => Created(Json.obj("updated" -> id))
       case _ => InternalServerError(Json.obj("fail" -> false))
+    }
+  }
+
+  def delete(id:Int)= Action.async{
+    CarAdv.delete(id).map{
+      case rows:Int if rows > 0 => Accepted(Json.obj("deleted" -> true))
+      case _ => InternalServerError(Json.obj("deleted" -> false))
     }
   }
 }

@@ -5,10 +5,10 @@
 # Home page
 GET     /                           controllers.Application.index
 
-GET     /hello/:n                controllers.CarAdvController.hello(n:String)
-GET     /get/:id               controllers.CarAdvController.get(id:Int)
-GET     /gets            controllers.CarAdvController.gets
-POST     /set                controllers.CarAdvController.post()
+GET     /hello/:n           controllers.CarAdvController.hello(n:String)
+GET     /CarAdv/:id         controllers.CarAdvController.get(id:Int)
+GET     /CarAdvs            controllers.CarAdvController.gets
+POST    /CarAdv             controllers.CarAdvController.post()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 

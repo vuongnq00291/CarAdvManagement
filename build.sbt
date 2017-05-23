@@ -6,7 +6,13 @@ lazy val `caradvmanagement` = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.7"
 
-libraryDependencies ++= Seq( jdbc , cache , ws   , specs2 % Test )
+libraryDependencies ++= Seq( evolutions, jdbc , cache , ws   ,
+  specs2 % Test ,
+  "joda-time" % "joda-time" % "2.3",
+  "org.xerial" % "sqlite-jdbc" % "3.7.15-M1",
+  "com.typesafe.play" %% "anorm" % "2.4.0",
+  "io.spray" %%  "spray-json" % "1.2.6"
+)
 
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )  
 

@@ -56,7 +56,7 @@ object CarAdvController extends  Controller {
     val adv = jsonAst.convertTo[CarAdv]
     CarAdv.update(adv).map{
       case Some(id:Long) => Created(Json.obj("updated" -> id))
-      case _ => InternalServerError(Json.obj("updated" -> false))
+      case _ => InternalServerError(Json.obj("fail" -> false))
     }
   }
 }

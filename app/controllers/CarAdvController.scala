@@ -105,7 +105,7 @@ object CarAdvController extends  Controller {
     if(adv.newCar==None){
       errors.add("newCar is required")
     }
-    if(adv.newCar==1){
+    if(adv.newCar==Some(1)){
       if(adv.mileage==None){
         errors.add("mileage is required")
       }

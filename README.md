@@ -16,11 +16,11 @@ Play will start up on the HTTP port at http://localhost:9000/.   You don't need 
 GET:
 ```
 GET http://localhost:9000/CarAdv/1
-```
+
 return 1 record of Car advertising
 
 GET http://localhost:9000/CarAdvs
-```
+
 return all car advertisings
 
 ```

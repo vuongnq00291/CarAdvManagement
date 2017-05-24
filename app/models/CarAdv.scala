@@ -11,18 +11,18 @@ import scala.concurrent.Future
   */
 
 case class CarAdv(
-       id      : Int,
-       title    : String,
-       fuel     : String,
-       price     :Int,
-       newCar     :Int,
+       id      : Option[Int],
+       title    : Option[String],
+       fuel     : Option[String],
+       price     :Option[Int],
+       newCar     :Option[Int],
        mileage    :Option[Int],
        first_registration :Option[Long]
 )
 
 object CarAdv{
   val parser = {
-    int("id")~str("title")~str("fual")~int("price")~int("newone")~get[Option[Int]]("mileage")~get[Option[Long]]("first_registration")
+    get[Option[Int]]("id")~get[Option[String]]("title")~get[Option[String]]("fual")~get[Option[Int]]("price")~get[Option[Int]]("newone")~get[Option[Int]]("mileage")~get[Option[Long]]("first_registration")
   }.map{
     case id~title~fual~price~newone~mileage~frDate => CarAdv(id,title,fual,price,newone,mileage,frDate)
   }

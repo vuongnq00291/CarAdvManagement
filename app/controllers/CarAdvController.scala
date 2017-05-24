@@ -28,15 +28,21 @@ object CarAdvController extends  Controller {
 
   def get(id:Int)= Action.async{
     CarAdv.g(id).map{
-      case Some(item:CarAdv) => Ok(Json.toJson(item))
-      case _ => Ok("nonono")
+      case Some(item:CarAdv) => Ok(Json.toJson(ResponseMessage(None,Some(item))))
+      case _ => {
+        val errors = List("No record found.");
+        Ok(Json.toJson(ResponseMessage(Some(errors),None)))
+      }
     }
   }
 
   def gets()= Action.async{
     CarAdv.gets.map{
       case items:List[CarAdv] => Ok(Json.toJson(items))
-      case _ =>  NoContent
+      case _ =>  {
+        val errors = List("No record found.");
+        Ok(Json.toJson(ResponseMessage(Some(errors),None)))
+      }
     }
   }
 

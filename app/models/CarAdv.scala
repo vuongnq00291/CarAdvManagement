@@ -36,7 +36,7 @@ object CarAdv{
   }
 
   def gets() = Future{
-    val query = SQL("SELECT * FROM CarAdv")
+    val query = SQL("SELECT * FROM CarAdv ORDER BY id DESC")
     DB.withConnection { implicit connection =>
       query.on().as(parser*)
     }

@@ -1,6 +1,7 @@
 
 import play.api.libs.json.Json
-import models.CarAdv
+import models.{CarAdv, ResponseMessage}
+
 package object controllers {
 
   type Date = java.util.Date
@@ -25,6 +26,7 @@ package object controllers {
 
   implicit var connection = DB.getConnection()
   implicit val jsonFormat = Json.format[CarAdv]
+  implicit val responseFormat = Json.format[ResponseMessage]
 
   def utc(date:Date) = {
     val tz = TimeZone.getDefault()

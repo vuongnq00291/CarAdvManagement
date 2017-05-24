@@ -3,7 +3,7 @@ package models
 import anorm.{SQL, ~}
 import anorm.SqlParser._
 import controllers.{DB, now}
-
+import org.joda.time._
 import scala.concurrent.Future
 
 /**
@@ -16,22 +16,17 @@ case class CarAdv(
        fuel     : String,
        price     :Int,
        newCar     :Int,
-       mileage    :Int,
-       first_registration :Long
+       mileage    :Option[Int],
+       first_registration :Option[Long]
 )
 
 object CarAdv{
   val parser = {
-    int("id")~str("title")~str("fual")~int("price")~int("newone")~int("mileage")
+    int("id")~str("title")~str("fual")~int("price")~int("newone")~get[Option[Int]]("mileage")~get[Option[Long]]("first_registration")
   }.map{
-    case id~title~fual~price~newone~mileage => CarAdv(id,title,fual,price,newone,mileage,now.getMillis)
+    case id~title~fual~price~newone~mileage~frDate => CarAdv(id,title,fual,price,newone,mileage,frDate)
   }
-  def get(id:Int) = Future {
-    val parser = {
-      int("id")~str("title")~str("fual")~int("price")~int("newone")~int("mileage")
-    }.map{
-      case id~title~fual~price~newone~mileage => CarAdv(id,title,fual,price,newone,mileage,now.getMillis)
-    }
+  def g(id:Int) = Future {
     val query = SQL("SELECT * FROM CarAdv where id = {id}")
     DB.withConnection { implicit connection =>
       query.on(
@@ -40,7 +35,7 @@ object CarAdv{
     }
   }
 
-  def gets = Future{
+  def gets() = Future{
     val query = SQL("SELECT * FROM CarAdv")
     DB.withConnection { implicit connection =>
       query.on().as(parser*)
@@ -56,7 +51,7 @@ object CarAdv{
         'price -> adv.price,
         'newone -> adv.newCar,
         'miles -> adv.mileage,
-        'frdate ->  now.toString
+        'frdate ->  adv.first_registration
       ).executeInsert()
     }
   }
@@ -71,7 +66,7 @@ object CarAdv{
         'price -> adv.price,
         'newone -> adv.newCar,
         'miles -> adv.mileage,
-        'frdate ->  now.toString,
+        'frdate ->  adv.first_registration,
         'id ->  id
       ).executeInsert()
     }

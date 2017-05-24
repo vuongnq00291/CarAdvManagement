@@ -1,7 +1,9 @@
 package controllers
 
+import java.util
+
 import com.fasterxml.jackson.databind.ObjectMapper
-import models.CarAdv
+import models.{CarAdv, ResponseMessage}
 import play.api.Play.current
 import play.api.db._
 import play.api.libs.json.Json
@@ -9,6 +11,8 @@ import play.api.mvc._
 import anorm.{~, _}
 import spray.json._
 import DefaultJsonProtocol._
+import java.util.ArrayList
+import collection.JavaConversions._
 import akka.util.Helpers.Requiring
 
 import scala.concurrent.Future
@@ -23,7 +27,7 @@ object CarAdvController extends  Controller {
 
 
   def get(id:Int)= Action.async{
-    CarAdv.get(id).map{
+    CarAdv.g(id).map{
       case Some(item:CarAdv) => Ok(Json.toJson(item))
       case _ => Ok("nonono")
     }
@@ -40,12 +44,18 @@ object CarAdvController extends  Controller {
     val s = request.body.toString
     val jsonAst = s.parseJson
     val adv = jsonAst.convertTo[CarAdv]
-    CarAdv.create(adv).map{
-      case Some(id:Long) => Created(Json.obj("created" -> id))
-      case _ => InternalServerError(Json.obj("created" -> false))
+    val errors = validate(adv)
+    if(errors.size>0){
+      Future{
+        val res = ResponseMessage(Some(errors),None)
+        BadRequest(Json.toJson(res))
+      }
+    }else{
+      CarAdv.create(adv).map{
+        case Some(id:Long) => Created(Json.obj("created" -> id))
+        case _ => InternalServerError(Json.obj("created" -> false))
+      }
     }
-  }
-  def validate(adv:CarAdv)  = Future{
 
   }
 
@@ -53,10 +63,19 @@ object CarAdvController extends  Controller {
     val s = request.body.toString
     val jsonAst = s.parseJson
     val adv = jsonAst.convertTo[CarAdv]
-    CarAdv.update(id,adv).map{
-      case Some(id:Long) => Created(Json.obj("updated" -> id))
-      case _ => InternalServerError(Json.obj("fail" -> false))
+    val errors = validate(adv)
+    if(errors.size>0){
+      Future{
+        val res = ResponseMessage(Some(errors),None)
+        BadRequest(Json.toJson(res))
+      }
+    }else{
+      CarAdv.update(id,adv).map{
+        case Some(id:Long) => Created(Json.obj("updated" -> id))
+        case _ => InternalServerError(Json.obj("fail" -> false))
+      }
     }
+
   }
 
   def delete(id:Int)= Action.async{
@@ -64,5 +83,30 @@ object CarAdvController extends  Controller {
       case rows:Int if rows > 0 => Accepted(Json.obj("deleted" -> true))
       case _ => InternalServerError(Json.obj("deleted" -> false))
     }
+  }
+
+  private def validate(adv:CarAdv):  Seq[String]= {
+    var errors = new ArrayList[String]
+    if(adv.id==None){
+      errors.add("id is required")
+    }
+    if(adv.title==None){
+      errors.add("title is required")
+    }
+    if(adv.price==None){
+      errors.add("price is required")
+    }
+    if(adv.newCar==None){
+      errors.add("newCar is required")
+    }
+    if(adv.newCar==1){
+      if(adv.mileage==None){
+        errors.add("mileage is required")
+      }
+      if(adv.first_registration==None){
+        errors.add("first registration is required")
+      }
+    }
+    return errors
   }
 }

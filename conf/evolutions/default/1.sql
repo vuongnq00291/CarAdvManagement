@@ -1,4 +1,6 @@
+
 # --- !Ups
+
 CREATE TABLE CarAdv (
   id         INTEGER      NOT NULL PRIMARY KEY AUTOINCREMENT,
   title      VARCHAR(255) NOT NULL,
@@ -10,4 +12,5 @@ CREATE TABLE CarAdv (
 );
 
 # --- !Downs
+
 DROP TABLE CarAdv;

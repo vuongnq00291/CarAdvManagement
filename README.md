@@ -31,9 +31,9 @@ return all car advertisings
 POST:
 ```
 POST http://localhost:9000/CarAdv
-```
 create mew car advertising
 Body should be like this 
+
 {         "id":1,
            "title":"vuong faiaaa car 222222222",
            "fuel":"gas",
@@ -48,9 +48,8 @@ Body should be like this
 PUT:
 ```
 PUT http://localhost:9000/CarAdv/1
-```
 update a car advertising by id
-Body should be like this 
+
 Body should be like this 
 {         "id":1,
            "title":"vuong faiaaa car 222222222",

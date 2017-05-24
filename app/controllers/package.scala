@@ -28,6 +28,9 @@ package object controllers {
   implicit val jsonFormat = Json.format[CarAdv]
   implicit val responseFormat = Json.format[ResponseMessage]
 
+
+
+
   def utc(date:Date) = {
     val tz = TimeZone.getDefault()
     var ret = new Date( date.getTime() - tz.getRawOffset() )

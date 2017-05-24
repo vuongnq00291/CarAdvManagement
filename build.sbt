@@ -6,7 +6,7 @@ lazy val `caradvmanagement` = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.7"
 
-libraryDependencies ++= Seq( evolutions, jdbc , cache , ws   ,
+libraryDependencies ++= Seq( filters,evolutions, jdbc , cache , ws   ,
   specs2 % Test ,
   "joda-time" % "joda-time" % "2.3",
   "org.xerial" % "sqlite-jdbc" % "3.7.15-M1",

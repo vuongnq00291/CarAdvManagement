@@ -19,9 +19,6 @@ GET http://localhost:9000/CarAdv/1
 ```
 return 1 record of Car advertising
 
-```
-GET:
-```
 GET http://localhost:9000/CarAdvs
 ```
 return all car advertisings
